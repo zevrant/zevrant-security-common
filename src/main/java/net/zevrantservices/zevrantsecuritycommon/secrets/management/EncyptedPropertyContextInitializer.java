@@ -23,28 +23,7 @@ import java.util.stream.Stream;
 public class EncyptedPropertyContextInitializer implements ApplicationContextInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(EncyptedPropertyContextInitializer.class);
-    private final Pattern integerPattern;
-    private final Pattern bytePattern;
-    private final Pattern shortPattern;
-    private final Pattern booleanPattern;
-    private final Pattern longPattern;
-    private final Pattern doublePattern;
-    private final Pattern floatPattern;
-    private final Pattern charPattern;
-
-
-    public EncyptedPropertyContextInitializer() {
-        integerPattern = Pattern.compile("\\d{1,10}");
-        bytePattern = Pattern.compile("\\d{1, 3}");
-        shortPattern = Pattern.compile("\\d{1,5}");
-        booleanPattern = Pattern.compile("(true|false)");
-        longPattern = Pattern.compile("\\d{0,19}");
-        doublePattern = Pattern.compile("\\d{1," + 1.0E+307 +"}\\.\\d{1," + 1.0E+307 + "}");
-        floatPattern = Pattern.compile("\\d{1," + 1.0E+44 +"}\\.\\d{1," + 1.0E+44 + "}");
-        charPattern = Pattern.compile("\\w{1}");
-    }
-
-
+   
     private PropertySource getSecret(String secretName, String region) {
 
         // Create a Secrets Manager client
