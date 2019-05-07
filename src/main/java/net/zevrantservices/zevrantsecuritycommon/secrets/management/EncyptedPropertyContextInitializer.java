@@ -60,11 +60,7 @@ public class EncyptedPropertyContextInitializer implements ApplicationContextIni
             plainTextString = new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
         }
 
-        return buildPropertySource(secretName, plainTextString);
-    }
-
-    private PropertySource buildPropertySource(String secretName, String plainTextString) {
-
+        return new DecryptedPropertySource(secretName, plainTextString);
     }
 
     @Override
