@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.1.4.RELEASE'
     id 'java'
+    id 'maven-publish'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -15,6 +16,30 @@ repositories {
 
 ext {
     set('springCloudVersion', 'Greenwich.SR1')
+}
+
+publishing {
+    def accessKeyProperty = System.getenv().get("ACCESS_KEY")
+    def secretKeyProperty = System.getenv().get("SECRET_KEY")
+    def jarVersion
+    publications {
+        myPublication(MavenPublication) {
+            groupId 'net.zevrant-services'
+            artifactId 'zevrant-security-common'
+            version jarVersion
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://zevrant-security-common/"
+            credentials(AwsCredentials) {
+                accessKey = accessKeyProperty
+                secretKey = secretKeyProperty
+            }
+        }
+    }
 }
 
 dependencies {
@@ -37,4 +62,6 @@ dependencyManagement {
 test {
 
 }
+
+publish.dependsOn assemble
 
