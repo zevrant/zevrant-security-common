@@ -19,7 +19,8 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - JAR_VERSION=`python getVersion`
+      - chmod +x /usr/local/scripts/python/getVersion
+      - JAR_VERSION=`python /usr/local/scripts/python/getVersion`
       - ./gradlew publish -PjarVersion $JAR_VERSION
 cache:
   paths:
