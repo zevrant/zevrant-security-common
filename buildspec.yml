@@ -19,6 +19,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - chmod +x /usr/local/scripts/python/getVersion
+      - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
       - JAR_VERSION=`python /usr/local/scripts/python/getVersion`
       - ./gradlew publish -PjarVersion $JAR_VERSION
 cache:
