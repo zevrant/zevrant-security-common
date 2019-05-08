@@ -15,7 +15,6 @@ phases:
       - chmod a+x gradlew
       - ls -la
       - ./gradlew build --info --no-daemon -x bootJar
-      - mv 
   post_build:
     commands:
       - echo Build completed on `date`
