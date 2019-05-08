@@ -22,11 +22,8 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - mv build/libs/zevrant-oauth2-service-0.0.1-SNAPSHOT.jar build/libs/zevrant-oauth2-service.jar'
-
-  artifact:
-    files:
-      - build/lib/zevrant-oauth2-service.jar
+      - JAR_VERSION=`python getVersion`
+      - ./gradlew publish -PjarVersion $JAR_VERSION
 cache:
   paths:
     - '/root/.gradle/wrapper/**/*'
