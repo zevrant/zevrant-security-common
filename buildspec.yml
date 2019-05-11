@@ -21,7 +21,7 @@ phases:
       - chmod +x /usr/local/scripts/python/getVersion
       - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
       - echo $AWS_RESPONSE
-      - JAR_VERSION=`python /usr/local/scripts/python/getVersion \"$AWS_RESPONSE\"`
+      - JAR_VERSION=`python /usr/local/scripts/python/getVersion '$AWS_RESPONSE'`
       - ./gradlew publish -PjarVersion $JAR_VERSION
 cache:
   paths:
