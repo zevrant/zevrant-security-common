@@ -14,14 +14,13 @@ phases:
       - echo Build started on `date`
       - chmod a+x gradlew
       - ls -la
-      - ./gradlew build --info --no-daemon -x bootJar
+      - ./gradlew build --info -x bootJar
   post_build:
     commands:
       - echo Build completed on `date`
       - chmod +x /usr/local/scripts/python/getVersion
       - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
-      - echo $AWS_RESPONSE
-      - ./gradlew publish -PjarVersion $JAR_VERSION
+      - ./gradlew publish --info -x bootJar
 cache:
   paths:
     - '/root/.gradle/wrapper/**/*'

@@ -21,12 +21,11 @@ ext {
 publishing {
     def accessKeyProperty = System.getenv().get("ACCESS_KEY")
     def secretKeyProperty = System.getenv().get("SECRET_KEY")
-    def jarVersion
+
     publications {
         myPublication(MavenPublication) {
             groupId 'net.zevrant-services'
             artifactId 'zevrant-security-common'
-            version jarVersion
 
             from components.java
         }
@@ -39,6 +38,24 @@ publishing {
                 secretKey = secretKeyProperty
             }
         }
+    }
+}
+
+publish {
+    doFirst {
+        getVersion
+        version = getVersion
+    }
+}
+
+task getVersion(type: Exec) {
+    def awsResponse = System.getenv().get("AWS_RESPONSE")
+    commandLine "python /usr/local/scripts/python/getVersion $awsResponse"
+
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.getVersion = {
+        return standardOutput.toString()
     }
 }
 
