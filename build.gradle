@@ -16,6 +16,7 @@ repositories {
 
 ext {
     set('springCloudVersion', 'Greenwich.SR1')
+    def getVersion
 }
 
 publishing {
@@ -41,23 +42,11 @@ publishing {
     }
 }
 
-publish {
-    doFirst {
-        getVersion
-        version = getVersion
-    }
+bootJar {
+    archiveVersion = System.getenv().getProperty("JAR_VERSION")
 }
 
-task getVersion(type: Exec) {
-    def awsResponse = System.getenv().get("AWS_RESPONSE")
-    commandLine "python /usr/local/scripts/python/getVersion $awsResponse"
 
-    standardOutput = new ByteArrayOutputStream()
-
-    ext.getVersion = {
-        return standardOutput.toString()
-    }
-}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
@@ -81,4 +70,3 @@ test {
 }
 
 publish.dependsOn assemble
-
