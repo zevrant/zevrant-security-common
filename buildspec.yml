@@ -20,7 +20,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -l ./build/libs/
+      - ls -l 
       - ./gradlew publish --info -x bootJar
 cache:
   paths:
