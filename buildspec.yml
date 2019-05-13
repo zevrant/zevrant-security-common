@@ -16,12 +16,12 @@ phases:
       - echo Build started on `date`
       - chmod a+x gradlew
       - ls -la
-      - ./gradlew build --info -x bootJar
+      - ./gradlew build --info
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -l 
-      - ./gradlew publish --info -x bootJar
+      - ls -l build
+      - ./gradlew publish --info
 cache:
   paths:
     - '/root/.gradle/wrapper/**/*'
