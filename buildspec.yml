@@ -9,6 +9,8 @@ phases:
       - mkdir ~/.gradle/
       - echo cacheUser = $CACHE_USER > ~/.gradle/gradle.properties
       - echo cachePassword = $CACHE_PASSWORD >> ~/.gradle/gradle.properties
+      - chmod +x /usr/local/scripts/python/getVersion
+      - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
   build:
     commands:
       - echo Build started on `date`
@@ -18,8 +20,7 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - chmod +x /usr/local/scripts/python/getVersion
-      - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
+      
       - ./gradlew publish --info -x bootJar
 cache:
   paths:
