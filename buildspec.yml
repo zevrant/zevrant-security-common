@@ -11,6 +11,7 @@ phases:
       - echo cachePassword = $CACHE_PASSWORD >> ~/.gradle/gradle.properties
       - chmod +x /usr/local/scripts/python/getVersion
       - AWS_RESPONSE=`aws secretsmanager get-secret-value --secret-id zevrant-security-common-version`
+      - python /usr/local/scripts/python/getVersion '$AWS_RESPONSE'
   build:
     commands:
       - echo Build started on `date`
