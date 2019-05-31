@@ -11,20 +11,22 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 
 import java.security.InvalidParameterException;
 import java.util.Base64;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 
-public class EncyptedPropertyContextInitializer implements ApplicationContextInitializer {
+public class EncyptedPropertyContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private final Logger logger = LoggerFactory.getLogger(EncyptedPropertyContextInitializer.class);
-   
-    private PropertySource getSecret(String secretName, String region) {
+
+    private PropertySource<Object> getSecret(String secretName, String region, String secretPrefix) {
 
         // Create a Secrets Manager client
         AWSSecretsManager client  = AWSSecretsManagerClientBuilder.standard()
@@ -60,13 +62,14 @@ public class EncyptedPropertyContextInitializer implements ApplicationContextIni
             plainTextString = new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
         }
 
-        return new DecryptedPropertySource<String>(secretName, plainTextString);
+        return new DecryptedPropertySource<Object>(secretPrefix.concat(secretName), plainTextString);
     }
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         ConfigurableEnvironment environment = applicationContext.getEnvironment();
-        Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty("encrypted.properties"), "").split(","));
-        encryptedProperties.forEach(property -> environment.getPropertySources().replace(property, getSecret(property, Regions.US_EAST_1.getName())));
+        String secretPrefix = "encrypted.properties";
+        Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(secretPrefix), "").split(","));
+        encryptedProperties.forEach(property -> environment.getPropertySources().addLast(getSecret(property, Regions.US_EAST_1.getName(), secretPrefix.concat("."))));
     }
 }

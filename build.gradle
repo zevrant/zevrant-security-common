@@ -16,7 +16,6 @@ repositories {
 
 ext {
     set('springCloudVersion', 'Greenwich.SR1')
-    def getVersion
 }
 
 publishing {
@@ -43,7 +42,7 @@ publishing {
 }
 
 bootJar {
-    archiveVersion = System.getenv().getProperty("JAR_VERSION")
+//    archiveVersion = System.getenv().getProperty("JAR_VERSION")
 }
 
 
