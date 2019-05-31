@@ -41,11 +41,9 @@ publishing {
     }
 }
 
-bootJar {
-//    archiveVersion = System.getenv().getProperty("JAR_VERSION")
+jar {
+    enabled = true
 }
-
-
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
