@@ -7,8 +7,15 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'net.zevrant-services'
-version = '0.0.1-SNAPSHOT'
+if(project.hasProperty('projVersion')) {
+    project.version = project.projVersion
+    ext.isSnapshot=false
+} else {
+    project.version = '0.0.1-snapshot'
+}
+
 sourceCompatibility = '1.8'
+bootJar.enabled = false
 
 repositories {
     mavenCentral()
@@ -32,7 +39,7 @@ publishing {
     }
     repositories {
         maven {
-            url "s3://zevrant-security-common/"
+            url "s3://zevrant-artifact-store/"
             credentials(AwsCredentials) {
                 accessKey = accessKeyProperty
                 secretKey = secretKeyProperty
@@ -49,8 +56,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+    implementation 'com.amazonaws:aws-java-sdk-acm:1.11.648'
     implementation 'org.springframework.cloud:spring-cloud-aws-secrets-manager-config'
     implementation 'commons-lang:commons-lang:2.6'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.63'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
