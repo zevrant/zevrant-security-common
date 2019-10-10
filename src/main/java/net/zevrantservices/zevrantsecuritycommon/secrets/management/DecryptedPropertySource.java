@@ -8,12 +8,9 @@ public class DecryptedPropertySource<T> extends PropertySource<T> {
         super(name, source);
     }
 
-    public DecryptedPropertySource(String name) {
-        super(name);
-    }
-
     @Override
     public Object getProperty(String name) {
         return null;
     }
+
 }

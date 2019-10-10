@@ -36,8 +36,7 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
         // We rethrow the exception by default.
 
         String plainTextString;
-        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
-                .withSecretId(secretName);
+        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest().withSecretId(secretName);
         GetSecretValueResult getSecretValueResult;
 
         try {
@@ -77,11 +76,12 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
     public void initialize(ConfigurableApplicationContext applicationContext) {
         ConfigurableEnvironment environment = applicationContext.getEnvironment();
         String secretPrefix = "encrypted.properties";
-        Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(secretPrefix), "").split(","));
+        String[] properties = StringUtils.defaultIfBlank(environment.getProperty(secretPrefix), "").split(",");
+        Stream<String> encryptedProperties = Stream.of(properties);
         encryptedProperties.forEach(property -> {
             try {
                 environment.getPropertySources().addLast(getSecret(property, Regions.US_EAST_1.getName(), secretPrefix.concat(".")));
-            } catch (IOException e) {
+            } catch (IOException | com.amazonaws.services.secretsmanager.model.ResourceNotFoundException e) {
                 logger.error("failed to deserialize property");
             }
         });
