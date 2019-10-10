@@ -40,9 +40,8 @@ public class EncryptedKeystoreInitializerTest {
         MutablePropertySources properties = Mockito.mock(MutablePropertySources.class);
 
         given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("dev.oauth");
-        given(environment.getProperty("keystores.dev.oauth")).willReturn("dev/oauth/dev-oauth.p12");
-        given(environment.getProperty("encrypted.propertiesdev.oauthpassword")).willReturn("");
+        given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
+        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
         given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
@@ -63,9 +62,8 @@ public class EncryptedKeystoreInitializerTest {
         MutablePropertySources properties = Mockito.mock(MutablePropertySources.class);
 
         given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("dev.oauth");
-        given(environment.getProperty("keystores.dev.oauth")).willReturn("does_not_exist");
-        given(environment.getProperty("encrypted.propertiesdev.oauthpassword")).willReturn("");
+        given(environment.getProperty("keystores")).willReturn("DOES_NOT_EXIST");
+        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
         given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
@@ -79,9 +77,8 @@ public class EncryptedKeystoreInitializerTest {
         ArgumentCaptor<DecryptedPropertySource> captor = ArgumentCaptor.forClass(DecryptedPropertySource.class);
 
         given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("dev.oauth");
-        given(environment.getProperty("keystores.dev.oauth")).willReturn("dev/oauth/dev-oauth.p12");
-        given(environment.getProperty("encrypted.propertiesdev.oauthpassword")).willReturn("");
+        given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
+        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
         given(environment.getProperty("trusted.cert")).willReturn("does_not_exist");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");

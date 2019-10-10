@@ -1,29 +1,22 @@
 package net.zevrantservices.zevrantsecuritycommon.secrets.management;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.certificatemanager.AWSCertificateManager;
 import com.amazonaws.services.certificatemanager.AWSCertificateManagerClientBuilder;
-import com.amazonaws.services.certificatemanager.model.ExportCertificateRequest;
-import com.amazonaws.services.certificatemanager.model.ExportCertificateResult;
 import com.amazonaws.services.certificatemanager.model.GetCertificateRequest;
 import com.amazonaws.services.certificatemanager.model.GetCertificateResult;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.secretsmanager.model.ResourceNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
-import sun.security.x509.X509CertImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
@@ -32,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.stream.Stream;
 
 public class EncryptedKeystoreInitializer {
@@ -53,9 +45,11 @@ public class EncryptedKeystoreInitializer {
         Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(propertyPrefix), "").split(","));
         encryptedProperties.forEach(property -> {
             try {
-                String password = secretPrefix.concat(property.concat("password"));
-                String certificateName = environment.getProperty(propertyPrefix.concat(".".concat(property)));
-                environment.getPropertySources().addLast(getKeys(certificateName, environment.getProperty(password)));
+
+                String password = property.replaceAll("/", ".");
+                password= password.substring(0, password.length() - 5);
+                password = secretPrefix.concat(property.concat(".password"));
+                environment.getPropertySources().addLast(getKeys(property, StringUtils.defaultIfBlank(environment.getProperty(password), "")));
                 trustCertificates(environment);
             } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException  | AmazonS3Exception e ) {
                 logger.error("failed to deserialize keystore");
