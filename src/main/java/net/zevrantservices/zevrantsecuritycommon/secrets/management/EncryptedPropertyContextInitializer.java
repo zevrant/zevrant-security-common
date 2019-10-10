@@ -11,22 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Base64;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 
-public class EncyptedPropertyContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+public class EncryptedPropertyContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    private final Logger logger = LoggerFactory.getLogger(EncyptedPropertyContextInitializer.class);
+    private final Logger logger = LoggerFactory.getLogger(EncryptedPropertyContextInitializer.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private PropertySource<? extends Object> getSecret(String secretName, String region, String secretPrefix) throws IOException{

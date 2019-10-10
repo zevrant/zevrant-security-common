@@ -57,10 +57,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws'
     implementation 'com.amazonaws:aws-java-sdk-acm:1.11.648'
+    implementation 'com.amazonaws:aws-java-sdk-core:1.11.648'
     implementation 'org.springframework.cloud:spring-cloud-aws-secrets-manager-config'
     implementation 'commons-lang:commons-lang:2.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.63'
-
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
