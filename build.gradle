@@ -41,9 +41,8 @@ publishing {
     repositories {
         maven {
             url "s3://zevrant-artifact-store/"
-            credentials(AwsCredentials) {
-                accessKey = accessKeyProperty
-                secretKey = secretKeyProperty
+            authentication {
+                awsIm(AwsImAuthentication)
             }
         }
     }
