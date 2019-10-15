@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.1.4.RELEASE'
     id 'java'
+    id 'org.sonarqube' version '2.7'
     id 'maven-publish'
 }
 
@@ -40,9 +41,8 @@ publishing {
     repositories {
         maven {
             url "s3://zevrant-artifact-store/"
-            credentials(AwsCredentials) {
-                accessKey = accessKeyProperty
-                secretKey = secretKeyProperty
+            authentication {
+                awsIm(AwsImAuthentication)
             }
         }
     }
