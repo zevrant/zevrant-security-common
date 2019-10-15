@@ -42,11 +42,11 @@ public class EncryptedKeystoreInitializerTest {
         given(environment.getPropertySources()).willReturn(properties);
         given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
         given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
+        given(environment.getProperty("trusted.certs")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
 
-        verify(properties, times(2)).addLast(captor.capture());
+        verify(properties, times(2)).addFirst(captor.capture());
         List<DecryptedPropertySource> decryptedPropertySources = captor.getAllValues();
         KeyStore keyStore = (KeyStore) decryptedPropertySources.get(0).getSource();
         KeyStore trustStore = (KeyStore) decryptedPropertySources.get(1).getSource();
@@ -64,11 +64,11 @@ public class EncryptedKeystoreInitializerTest {
         given(environment.getPropertySources()).willReturn(properties);
         given(environment.getProperty("keystores")).willReturn("DOES_NOT_EXIST");
         given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
+        given(environment.getProperty("trusted.certs")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
 
-        verify(properties, never()).addLast(any());
+        verify(properties, never()).addFirst(any());
     }
 
     @Test
@@ -79,11 +79,11 @@ public class EncryptedKeystoreInitializerTest {
         given(environment.getPropertySources()).willReturn(properties);
         given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
         given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("does_not_exist");
+        given(environment.getProperty("trusted.certs")).willReturn("does_not_exist");
 
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
 
-        verify(properties).addLast(captor.capture());
+        verify(properties).addFirst(captor.capture());
 
         KeyStore keyStore = (KeyStore) captor.getValue().getSource();
 

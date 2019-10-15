@@ -47,9 +47,9 @@ public class EncryptedKeystoreInitializer {
             try {
 
                 String password = property.replaceAll("/", ".");
-                password= password.substring(0, password.length() - 5);
-                password = secretPrefix.concat(property.concat(".password"));
-                environment.getPropertySources().addLast(getKeys(property, StringUtils.defaultIfBlank(environment.getProperty(password), "")));
+                password= password.substring(0, password.length() - 4);
+                password = secretPrefix.concat(".".concat(password).concat(".password"));
+                environment.getPropertySources().addFirst(getKeys(property, StringUtils.defaultIfBlank(environment.getProperty(password), "")));
                 trustCertificates(environment);
             } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException  | AmazonS3Exception e ) {
                 logger.error("failed to deserialize keystore");
@@ -60,7 +60,7 @@ public class EncryptedKeystoreInitializer {
     }
 
     private void trustCertificates(ConfigurableEnvironment environment) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
-        String propertyPrefix = "trusted.cert";
+        String propertyPrefix = "trusted.certs";
         Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(propertyPrefix), "").split(","));
         KeyStore trustStore = KeyStore.getInstance("PKCS12");
         trustStore.load(null, null);
@@ -72,7 +72,7 @@ public class EncryptedKeystoreInitializer {
             }
         });
         if(trustStore.aliases().hasMoreElements()) {
-            environment.getPropertySources().addLast(new DecryptedPropertySource<KeyStore>("trustStore", trustStore));
+            environment.getPropertySources().addFirst(new DecryptedPropertySource<KeyStore>("trustStore", trustStore));
         }
     }
 

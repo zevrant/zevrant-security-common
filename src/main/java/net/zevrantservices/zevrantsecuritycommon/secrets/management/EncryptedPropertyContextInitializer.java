@@ -47,7 +47,6 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
             else {
                 plainTextString = new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
             }
-
             return createDecryptedProperty(secretPrefix.concat(secretName), plainTextString);
         } catch (DecryptionFailureException | InvalidRequestException | ResourceNotFoundException | InvalidParameterException | InternalServiceErrorException | IOException e) {
             // Secrets Manager can't decrypt the protected secret text.
@@ -80,11 +79,12 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
         Stream<String> encryptedProperties = Stream.of(properties);
         encryptedProperties.forEach(property -> {
             try {
-                environment.getPropertySources().addLast(getSecret(property, Regions.US_EAST_1.getName(), secretPrefix.concat(".")));
+                environment.getPropertySources().addFirst(getSecret(property, Regions.US_EAST_1.getName(), secretPrefix.concat(".")));
             } catch (IOException | com.amazonaws.services.secretsmanager.model.ResourceNotFoundException e) {
                 logger.error("failed to deserialize property");
             }
         });
         new EncryptedKeystoreInitializer().initializeKeystores(environment, secretPrefix);
+        applicationContext.setEnvironment(environment);
     }
 }
