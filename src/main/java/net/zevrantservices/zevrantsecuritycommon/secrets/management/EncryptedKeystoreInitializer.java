@@ -49,7 +49,7 @@ public class EncryptedKeystoreInitializer {
                 String password = property.replaceAll("/", ".");
                 password= password.substring(0, password.length() - 4);
                 password = secretPrefix.concat(".".concat(password).concat(".password"));
-                environment.getPropertySources().addFirst(getKeys(property, StringUtils.defaultIfBlank(environment.getProperty(password), "")));
+                environment.getPropertySources().addFirst(getKeys(password, StringUtils.defaultIfBlank(environment.getProperty(property), "")));
                 trustCertificates(environment);
             } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException  | AmazonS3Exception e ) {
                 logger.error("failed to deserialize keystore");
