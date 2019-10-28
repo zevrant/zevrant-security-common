@@ -43,7 +43,7 @@ public class EncryptedPropertyContextInitializerTest {
         given(environment.getPropertySources()).willReturn(properties);
         given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
         given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
+        given(environment.getProperty("trusted.certs")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class EncryptedPropertyContextInitializerTest {
 
         initializer.initialize(context);
 
-        verify(properties, times(3)).addLast(propertyCaptor.capture());
+        verify(properties, times(3)).addFirst(propertyCaptor.capture());
 
         DecryptedPropertySource property = propertyCaptor.getAllValues().get(0);
         assertThat(property.getSource(), is("test"));
@@ -64,7 +64,7 @@ public class EncryptedPropertyContextInitializerTest {
 
         initializer.initialize(context);
 
-        verify(properties, times(3)).addLast(propertyCaptor.capture());
+        verify(properties, times(3)).addFirst(propertyCaptor.capture());
 
         DecryptedPropertySource property = propertyCaptor.getAllValues().get(0);
         assertThat(property.getSource().getClass(), is(equalTo(UsernamePasswordProperty.class)));
@@ -78,7 +78,7 @@ public class EncryptedPropertyContextInitializerTest {
 
         initializer.initialize(context);
 
-        verify(properties, times(2)).addLast(propertyCaptor.capture());
+        verify(properties, times(2)).addFirst(propertyCaptor.capture());
 
         assertThat(propertyCaptor.getValue().getSource().getClass(), is(equalTo(KeyStore.class)));
         assertThat(propertyCaptor.getValue().getSource().getClass(), is(equalTo(KeyStore.class)));
