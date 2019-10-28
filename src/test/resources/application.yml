@@ -1,0 +1,15 @@
+zevrant:
+  encrypted:
+    properties: dev.oauth.keystore.credentials
+  security:
+    keystore: dev/oauth/dev-oauth.p12
+    trusted:
+     certs: 40987b81-0799-4ff7-9bc2-b012efe6d010
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+      auto: false
+    stack:
+      auto: false

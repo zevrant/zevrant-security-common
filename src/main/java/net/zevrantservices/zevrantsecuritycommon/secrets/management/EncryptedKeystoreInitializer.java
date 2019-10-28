@@ -41,7 +41,7 @@ public class EncryptedKeystoreInitializer {
     }
 
     public void initializeKeystores(ConfigurableEnvironment environment, String secretPrefix) {
-        String propertyPrefix = "keystores";
+        String propertyPrefix = "zevrant.security.keystore";
         Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(propertyPrefix), "").split(","));
         encryptedProperties.forEach(property -> {
             try {
@@ -60,7 +60,7 @@ public class EncryptedKeystoreInitializer {
     }
 
     private void trustCertificates(ConfigurableEnvironment environment) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
-        String propertyPrefix = "trusted.cert";
+        String propertyPrefix = "zevrant.security.trusted.certs";
         Stream<String> encryptedProperties = Stream.of(StringUtils.defaultIfBlank(environment.getProperty(propertyPrefix), "").split(","));
         KeyStore trustStore = KeyStore.getInstance("PKCS12");
         trustStore.load(null, null);
@@ -87,7 +87,7 @@ public class EncryptedKeystoreInitializer {
 
         KeyStore keystore = KeyStore.getInstance("PKCS12");
         keystore.load(object.getObjectContent(), password.toCharArray());
-        return new DecryptedPropertySource<>(certificateName, keystore);
+        return new DecryptedPropertySource<>("zevrant.security.keystore", keystore);
     }
 
 

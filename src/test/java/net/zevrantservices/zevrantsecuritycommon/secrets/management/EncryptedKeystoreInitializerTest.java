@@ -1,74 +1,38 @@
 package net.zevrantservices.zevrantsecuritycommon.secrets.management;
 
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class EncryptedKeystoreInitializerTest {
 
     private EncryptedKeystoreInitializer encryptedKeystoreInitializer;
 
-    @Mock
+    @Autowired
     private ConfigurableEnvironment environment;
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         encryptedKeystoreInitializer = new EncryptedKeystoreInitializer();
-    }
-
-    @Test
-    public void initializeKeystore() throws KeyStoreException {
-        ArgumentCaptor<DecryptedPropertySource> captor = ArgumentCaptor.forClass(DecryptedPropertySource.class);
-        MutablePropertySources properties = Mockito.mock(MutablePropertySources.class);
-
-        given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
-        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
-
-        encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
-
-        verify(properties, times(2)).addLast(captor.capture());
-        List<DecryptedPropertySource> decryptedPropertySources = captor.getAllValues();
-        KeyStore keyStore = (KeyStore) decryptedPropertySources.get(0).getSource();
-        KeyStore trustStore = (KeyStore) decryptedPropertySources.get(1).getSource();
-
-        assertThat(keyStore, is(notNullValue()));
-        assertThat(trustStore, is(notNullValue()));
-        assertThat(keyStore.containsAlias("1"), is(true));
-        assertThat(trustStore.aliases().hasMoreElements(), is(true));
-    }
-
-    @Test
-    public void initializeKeystoreIOExceptionKeystore() {
-        MutablePropertySources properties = Mockito.mock(MutablePropertySources.class);
-
-        given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("DOES_NOT_EXIST");
-        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("8eba18bc-885d-4775-af5b-294cc6105961");
-
-        encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
-
-        verify(properties, never()).addLast(any());
     }
 
     @Test
@@ -76,18 +40,18 @@ public class EncryptedKeystoreInitializerTest {
         MutablePropertySources properties = Mockito.mock(MutablePropertySources.class);
         ArgumentCaptor<DecryptedPropertySource> captor = ArgumentCaptor.forClass(DecryptedPropertySource.class);
 
-        given(environment.getPropertySources()).willReturn(properties);
-        given(environment.getProperty("keystores")).willReturn("dev/oauth/dev-oauth.p12");
-        given(environment.getProperty("encrypted.properties.dev.oauthpassword")).willReturn("");
-        given(environment.getProperty("trusted.cert")).willReturn("does_not_exist");
-
         encryptedKeystoreInitializer.initializeKeystores(environment, "encrypted.properties");
 
-        verify(properties).addLast(captor.capture());
+        MutablePropertySources sources = environment.getPropertySources();
+        assertThat(sources, is(notNullValue()));
 
-        KeyStore keyStore = (KeyStore) captor.getValue().getSource();
+        boolean[] foundPropertySource = {false, false};
 
-        assertThat(keyStore, is(notNullValue()));
-        assertThat(keyStore.containsAlias("1"), is(true));
+        sources.stream().forEach(propertySource -> {
+            foundPropertySource[0] = foundPropertySource[0] || propertySource.getName().equals("zevrant.security.keystore");
+            foundPropertySource[0] = foundPropertySource[0] || propertySource.getName().contains("zevrant.security.trusted.certs");
+        });
+
+        assertThat(foundPropertySource[0], is(true));
     }
 }

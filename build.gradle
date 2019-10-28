@@ -53,7 +53,7 @@ jar {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws'
     implementation 'com.amazonaws:aws-java-sdk-acm:1.11.648'
