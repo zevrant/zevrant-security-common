@@ -1,0 +1,99 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'java'
+    id 'org.sonarqube' version '2.7'
+    id 'maven-publish'
+    id 'org.unbroken-dome.test-sets' version '2.2.1'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'net.zevrant-net.zevrant.services.security.common.secrets.services'
+if(project.hasProperty('projVersion')) {
+    project.version = project.projVersion
+    ext.isSnapshot=false
+} else {
+    project.version = '0.0.1-snapshot'
+}
+
+sourceCompatibility = '1.11'
+bootJar.enabled = false
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', 'Greenwich.SR1')
+}
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            groupId 'net.zevrant-services'
+            artifactId 'zevrant-security-common'
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://zevrant-artifact-store/"
+            authentication {
+                awsIm(AwsImAuthentication)
+            }
+        }
+    }
+}
+
+jar {
+    enabled = true
+}
+
+configurations {
+    runtime.exclude group: 'org.springframework.cloud', module: 'spring-cloud-aws-autoconfigure'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
+    implementation 'com.amazonaws:aws-java-sdk-core'
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.63'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.0.rc1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0.rc1'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    compile "com.amazonaws:aws-java-sdk-secretsmanager"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.343'
+        mavenBom 'software.amazon.awssdk:bom:2.10.30'
+    }
+}
+
+testSets {
+    integrationTest { dirName = 'integrationTest' }
+}
+
+test {
+    useJUnitPlatform ()
+}
+
+integrationTest {
+    useJUnitPlatform ()
+}
+
+publish.dependsOn assemble

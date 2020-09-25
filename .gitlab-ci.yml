@@ -1,0 +1,48 @@
+default:
+  image: "zevrant/gitlab-runner:latest"
+
+#job:
+#  only:
+#    - master@github.com/zevrant/zevrant-security-common
+#  extends:
+#  when: delayed
+#  start_in:
+#  rules:
+#    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+#      when: always
+
+
+before_script:
+  - VERSION=`aws ssm get-parameter --name zevrant-security-common-VERSION`
+  - VERSION=` echo $VERSION | jq .Parameter.Value`;
+  - chrlen=`expr ${#VERSION} - 1`
+  - VERSION=`echo $VERSION | cut -c2-$chrlen`
+  - echo $VERSION
+
+stages:
+  - test
+  - sonarScan
+  - updateVersion
+  - publish
+
+
+#sonarScan:
+#  stage: sonarScan
+#  script: bash gradlew sonar
+
+test:
+  stage: test
+  script: bash gradlew test
+
+updateVersion:
+  stage: updateVersion
+  script:
+    - IFS='.'
+    - read -ra arr <<< "$VERSION"
+    - minorVersion=$( expr ${arr[2]} + 1 )
+    - aws ssm put-parameter --name zevrant-security-common-VERSION --value ${arr[0]}.${arr[1]}.$minorVersion --type String --overwrite
+
+publish:
+  stage: publish
+  script:
+    - ./gradlew publish -PprojVersion="$VERSION"
