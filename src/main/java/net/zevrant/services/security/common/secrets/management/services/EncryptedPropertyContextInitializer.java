@@ -1,40 +1,19 @@
 package net.zevrant.services.security.common.secrets.management.services;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSSessionCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
-import com.amazonaws.services.secretsmanager.AWSSecretsManagerClient;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.*;
-import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
-import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClient;
-import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
-import com.amazonaws.services.securitytoken.model.AssumeRoleRequest;
-import com.amazonaws.services.securitytoken.model.AssumeRoleResult;
-import com.amazonaws.services.securitytoken.model.Credentials;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.zevrant.services.security.common.secrets.management.rest.response.AwsSessionCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.client.RestTemplate;
-import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class EncryptedPropertyContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -50,13 +29,14 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
         String[] activeProfiles = applicationContext.getEnvironment().getActiveProfiles();
         // Create a Secrets Manager client
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard()
-                .withRegion(region);
+                .withRegion(region)
+                .withCredentials(new InstanceProfileCredentialsProvider(true));
 
-        if(Arrays.stream(activeProfiles).anyMatch(supportedProfiles::contains)) {
+//        if(Arrays.stream(activeProfiles).anyMatch(supportedProfiles::contains)) {
             BasicSessionCredentials credentials = credentialsProvider.assumeRole(region, roleArn);
             clientBuilder.withCredentials(new AWSStaticCredentialsProvider(credentials));
 
-        }
+//        }
         AWSSecretsManager client = clientBuilder.build();
 
         for(String profile : activeProfiles) {
@@ -77,6 +57,4 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
             }
         }
     }
-
-
 }

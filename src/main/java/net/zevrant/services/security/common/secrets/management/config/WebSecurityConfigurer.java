@@ -8,16 +8,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-        public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private String baseUrl;
-    private RestTemplate restTemplate;
-    private AuthenticationManager authenticationManager;
+    private final String baseUrl;
+    private final RestTemplate restTemplate;
+    private final AuthenticationManager authenticationManager;
+
     public WebSecurityConfigurer(@Value("${zevrant.services.proxy.baseUrl}") String baseUrl, RestTemplate restTemplate, AuthenticationManager authenticationManager) {
         this.baseUrl = baseUrl;
         this.restTemplate = restTemplate;
@@ -25,14 +25,16 @@ import org.springframework.web.client.RestTemplate;
     }
 
     @Override
-    protected void configure(HttpSecurity security) throws Exception {
-        security
-                .authorizeRequests().antMatchers(new String[]{"/actuator/health", "/actuator/info", "/actuator"}).permitAll()
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .anonymous().and()
+                .authorizeRequests().antMatchers(new String[]{"/actuator/health", "/actuator/info", "/actuator/prometheus"}).permitAll()
                 .and()
                 .csrf().disable()
                 .httpBasic().disable()
                 .addFilterBefore(new OAuthSecurityFilter(this.baseUrl, this.restTemplate, this.authenticationManager), AnonymousAuthenticationFilter.class);
 //                .anonymous().disable();
+        super.configure(http);
     }
 
 }

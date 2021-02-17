@@ -22,19 +22,22 @@ public class OAuthSecurityFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuthSecurityFilter.class);
 
-    private String proxyBaseUrl;
-    private ObjectMapper objectMapper;
-    private RestTemplate restTemplate;
-    private AuthenticationManager authenticationManager;
+    private final String proxyBaseUrl;
+    private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
+    private final AuthenticationManager authenticationManager;
+
     public OAuthSecurityFilter(String proxyBaseUrl, RestTemplate restTemplate, AuthenticationManager authenticationManager) {
         this.proxyBaseUrl = proxyBaseUrl;
         this.objectMapper = new ObjectMapper();
         this.restTemplate = restTemplate;
         this.authenticationManager = authenticationManager;
     }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if(((HttpServletRequest) request).getRequestURI().contains("/actuator") ||
+        if (((HttpServletRequest) request).getRequestURI().contains("/actuator") ||
+                ((HttpServletRequest) request).getRequestURI().contains("/webhooks") ||
                 ((HttpServletRequest) request).getRequestURI().contains("/error")){
             HttpServletResponse resp = ((HttpServletResponse) response);
             resp.reset();

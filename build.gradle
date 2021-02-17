@@ -58,12 +58,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
-    implementation 'com.amazonaws:aws-java-sdk-core'
+    implementation 'com.amazonaws:aws-java-sdk-core:1.11.939'
     implementation 'com.amazonaws:aws-java-sdk-sts:1.11.939'
-    implementation 'software.amazon.awssdk:s3'
+    implementation 'org.json:json:20201115'
     implementation 'commons-lang:commons-lang:2.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.63'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
@@ -74,14 +72,13 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
 
-    compile "com.amazonaws:aws-java-sdk-secretsmanager"
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-secretsmanager', version: '1.11.946'
+
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.343'
-        mavenBom 'software.amazon.awssdk:bom:2.10.30'
     }
 }
 
