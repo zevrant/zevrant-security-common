@@ -18,8 +18,13 @@ import java.util.Objects;
 public class EncryptedPropertyContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(EncryptedPropertyContextInitializer.class);
-    private final List supportedProfiles = Arrays.asList("develop", "prod");
-    private final AwsSessionCredentialsProvider credentialsProvider = new AwsSessionCredentialsProvider();
+    private final List<String> supportedProfiles;
+    private final AwsSessionCredentialsProvider credentialsProvider;
+
+    public EncryptedPropertyContextInitializer() {
+        supportedProfiles = Arrays.asList("develop", "prod");
+        credentialsProvider = new AwsSessionCredentialsProvider();
+    }
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {

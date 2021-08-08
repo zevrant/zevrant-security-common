@@ -8,10 +8,11 @@ import org.springframework.web.client.RestTemplate;
 
 public class TokenService {
 
-    private RestTemplate restTemplate;
-    private String username;
-    private String password;
-    private String oauthUrl;
+    private final RestTemplate restTemplate;
+    private final String username;
+    private final String password;
+    private final String oauthUrl;
+
     public TokenService(RestTemplate restTemplate, String oauthUrl, String username, String password) {
         this.restTemplate = restTemplate;
         this.username = username;
@@ -19,7 +20,7 @@ public class TokenService {
         this.oauthUrl = oauthUrl;
     }
 
-    public String getToken() {
+    public AccessToken getToken() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -31,6 +32,6 @@ public class TokenService {
 
         ResponseEntity<AccessToken> response = restTemplate.exchange(this.oauthUrl + "/zevrant-oauth2-service/oauth/token", HttpMethod.POST, entity, AccessToken.class);
         assert(response.getBody() != null);
-        return response.getBody().getAccessToken();
+        return response.getBody();
     }
 }

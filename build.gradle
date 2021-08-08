@@ -1,5 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'org.springframework.boot' version '2.5.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'org.sonarqube' version '2.7'
     id 'maven-publish'
@@ -21,10 +22,6 @@ bootJar.enabled = false
 
 repositories {
     mavenCentral()
-}
-
-ext {
-    set('springCloudVersion', 'Greenwich.SR1')
 }
 
 publishing {
@@ -74,12 +71,6 @@ dependencies {
 
     compile group: 'com.amazonaws', name: 'aws-java-sdk-secretsmanager', version: '1.11.946'
 
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
 }
 
 testSets {
