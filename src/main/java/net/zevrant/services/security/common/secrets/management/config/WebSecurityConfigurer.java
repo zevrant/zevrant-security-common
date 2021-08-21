@@ -17,23 +17,27 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private final String baseUrl;
     private final RestTemplate restTemplate;
     private final AuthenticationManager authenticationManager;
+    private final String[] unsecuredEndpoints;
 
-    public WebSecurityConfigurer(@Value("${zevrant.services.proxy.baseUrl}") String baseUrl, RestTemplate restTemplate, AuthenticationManager authenticationManager) {
+    public WebSecurityConfigurer(@Value("${zevrant.services.proxy.baseUrl}") String baseUrl, RestTemplate restTemplate,
+                                 AuthenticationManager authenticationManager,
+                                 @Value("${zevrant.unsecured.endpoints:/actuator/health,/actuator/info,/actuator/prometheus}")
+                                         String[] unsecuredEndpoints) {
         this.baseUrl = baseUrl;
         this.restTemplate = restTemplate;
         this.authenticationManager = authenticationManager;
+        this.unsecuredEndpoints = unsecuredEndpoints;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .anonymous().and()
-                .authorizeRequests().antMatchers(new String[]{"/actuator/health", "/actuator/info", "/actuator/prometheus"}).permitAll()
+                .authorizeRequests().antMatchers(unsecuredEndpoints).permitAll()
                 .and()
                 .csrf().disable()
                 .httpBasic().disable()
                 .addFilterBefore(new OAuthSecurityFilter(this.baseUrl, this.restTemplate, this.authenticationManager), AnonymousAuthenticationFilter.class);
-//                .anonymous().disable();
         super.configure(http);
     }
 

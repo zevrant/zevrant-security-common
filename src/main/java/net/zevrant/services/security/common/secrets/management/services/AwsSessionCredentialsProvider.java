@@ -45,6 +45,7 @@ public class AwsSessionCredentialsProvider {
     }
 
     public BasicSessionCredentials assumeRole(String region, String roleARN) {
+        logger.info("assuming role {}", roleARN);
         AWSSecurityTokenServiceClientBuilder stsClientBuilder = AWSSecurityTokenServiceClientBuilder.standard();
         setAwsCredentials(stsClientBuilder);
         stsClientBuilder.setRegion(region);
