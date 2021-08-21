@@ -45,6 +45,10 @@ publishing {
 
 jar {
     enabled = true
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 configurations {
