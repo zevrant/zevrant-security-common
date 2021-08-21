@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     build(
-                            job: 'zevrant-security-common',
+                            job: 'Libraries/Zevrant Security Common/zevrant-security-common',
                             propagate: true,
                             wait: true,
                             parameters: [
