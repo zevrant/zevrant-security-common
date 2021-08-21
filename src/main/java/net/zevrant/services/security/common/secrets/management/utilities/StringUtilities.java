@@ -25,9 +25,9 @@ public class StringUtilities {
      * @param digest MessageDigest of the hash type e.g. MessageDigest.getInstance(MessageDigestAlgorithms.SHA_256)
      * @param is     input stream created from file in which to be hashed
      * @return hash of file
-     * @throws IOException
+     * @throws IOException @see java.io.InputStream.read()
      */
-    private static String getChecksum(MessageDigest digest, InputStream is) throws IOException {
+    public static String getChecksum(MessageDigest digest, InputStream is) throws IOException {
         byte[] bytes = new byte[1024];
         while (is.read(bytes) > -1) {
             digest.update(bytes);
