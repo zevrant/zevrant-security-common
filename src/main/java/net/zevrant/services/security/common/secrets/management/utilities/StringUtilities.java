@@ -20,11 +20,11 @@ public class StringUtilities {
     }
 
     /**
-     * Get sha256 has of file
+     * Get hash of file
      *
-     * @param digest
-     * @param is
-     * @return
+     * @param digest MessageDigest of the hash type e.g. MessageDigest.getInstance(MessageDigestAlgorithms.SHA_256)
+     * @param is     input stream created from file in which to be hashed
+     * @return hash of file
      * @throws IOException
      */
     private static String getChecksum(MessageDigest digest, InputStream is) throws IOException {
