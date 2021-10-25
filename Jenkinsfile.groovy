@@ -1,17 +1,27 @@
+
+String branchName = (BRANCH_NAME.startsWith('PR-')) ? CHANGE_BRANCH : BRANCH_NAME
+
 pipeline {
     agent {
-        label 'master'
+        kubernetes {
+            inheritFrom 'jnlp'
+        }
     }
     stages {
         stage('Launch Build') {
             steps {
                 script {
+                    String[] jobNamePieces = JOB_NAME.split('/')
+                    String[] appPieces = jobNamePieces[1].split(" ")
+                    String applicationType = jobNamePieces[0]
+                    String folderName = "${appPieces[0].capitalize()} ${appPieces[1].capitalize()} ${appPieces[2].capitalize()}"
+                    String repository = folderName.replace(" ", "-").toLowerCase()
                     build(
-                            job: 'Libraries/Zevrant Security Common/zevrant-security-common',
+                            job: "${applicationType}/${folderName}/$repository",
                             propagate: true,
                             wait: true,
                             parameters: [
-                                    [$class: 'StringParameterValue', name: 'BRANCHNAME', value: env.BRANCH_NAME],
+                                    [$class: 'StringParameterValue', name: 'BRANCH_NAME', value: branchName],
                             ]
                     )
                 }

@@ -71,12 +71,7 @@ public class LiquibaseConfig {
         logger.debug(lastDBLockTime.toString());
 
 
-        final String checkQuery = "SELECT EXISTS ("
-                + "   SELECT FROM pg_catalog.pg_class c"
-                + "   JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace"
-                + "   WHERE  n.nspname = 'public'"
-                + "   AND    c.relname = 'DATABASECHANGELOGLOCK'"
-                + "   AND    c.relkind = 'r')";
+        final String checkQuery = "select * from public.databasechangeloglock d";
 
         final String query = format("DELETE FROM DATABASECHANGELOGLOCK WHERE LOCKED=true AND LOCKGRANTED<'%s'", lastDBLockTime);
 
@@ -86,14 +81,18 @@ public class LiquibaseConfig {
             resultSet.next();
             boolean tableExists = resultSet.getBoolean("exists");
             if (tableExists) {
-                int updateCount = stmt.executeUpdate(query);
-                if (updateCount > 0) {
-                    logger.info("Locks Removed Count: {} .", updateCount);
+                try {
+                    int updateCount = stmt.executeUpdate(query);
+                    if (updateCount > 0) {
+                        logger.info("Locks Removed Count: {} .", updateCount);
+                    }
+                } catch (SQLException e) {
+                    logger.error("Error! Remove Change Lock threw and Exception. ", e);
+                    System.exit(1);
                 }
             }
         } catch (SQLException e) {
-            logger.error("Error! Remove Change Lock threw and Exception. ", e);
-            System.exit(1);
+            logger.info("Table DatabaseChangelogLock not found.");
         }
     }
 }
