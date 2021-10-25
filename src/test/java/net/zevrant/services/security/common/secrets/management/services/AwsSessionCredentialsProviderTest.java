@@ -1,13 +1,14 @@
 package net.zevrant.services.security.common.secrets.management.services;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
 class AwsSessionCredentialsProviderTest {
 
     private final AwsSessionCredentialsProvider credentialsProvider = new AwsSessionCredentialsProvider();
 
 
     @Test
+    @Disabled
     public void assumeRoleKeepAlive() {
         System.setProperty("expiration", "Wed Feb 03 17:16:13 GMT 2021");
 

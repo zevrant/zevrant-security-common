@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'org.sonarqube' version '2.7'
     id 'maven-publish'
-    id 'org.unbroken-dome.test-sets' version '2.2.1'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -45,10 +44,6 @@ publishing {
 
 jar {
     enabled = true
-
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
 }
 
 configurations {
@@ -62,6 +57,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.amazonaws:aws-java-sdk-core:1.11.939'
     implementation 'com.amazonaws:aws-java-sdk-sts:1.11.939'
+    implementation 'com.amazonaws:aws-java-sdk-secretsmanager:1.11.946'
     implementation 'org.json:json:20201115'
     implementation 'commons-lang:commons-lang:2.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.63'
@@ -70,25 +66,18 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.0.rc1'
     implementation 'org.liquibase:liquibase-core:4.4.2'
     implementation 'org.postgresql:postgresql:42.2.23.jre7'
+    implementation 'junit:junit:4.13.1'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
 
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-secretsmanager', version: '1.11.946'
 
-}
 
-testSets {
-    integrationTest { dirName = 'integrationTest' }
 }
 
 test {
-    useJUnitPlatform ()
-}
-
-integrationTest {
     useJUnitPlatform ()
 }
 
