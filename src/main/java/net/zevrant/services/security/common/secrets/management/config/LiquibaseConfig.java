@@ -78,8 +78,8 @@ public class LiquibaseConfig {
 
         try (Statement stmt = dataSource.getConnection().createStatement()) {
             ResultSet resultSet = stmt.executeQuery(checkQuery);
-            resultSet.next();
-            boolean tableExists = resultSet.getBoolean("exists");
+
+            boolean tableExists = resultSet.next(); //should throw exception on error, or return false is there is no locks
             if (tableExists) {
                 try {
                     int updateCount = stmt.executeUpdate(query);
