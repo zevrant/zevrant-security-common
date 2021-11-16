@@ -1,6 +1,6 @@
-package net.zevrant.services.security.common.secrets.services;
+package com.zevrant.services.zevrantsecuritycommon.secrets.services;
 
-import net.zevrant.services.security.common.secrets.management.services.EncryptedPropertyContextInitializer;
+import com.zevrant.services.zevrantsecuritycommon.secrets.management.services.EncryptedPropertyContextInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
