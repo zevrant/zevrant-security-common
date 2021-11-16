@@ -2,6 +2,7 @@ package com.zevrant.services.zevrantsecuritycommon.services;
 
 import com.zevrant.services.zevrantsecuritycommon.rest.response.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,8 +18,10 @@ public class TokenService {
     private final String oauthUrl;
 
     @Autowired
-    public TokenService(RestTemplate restTemplate, String oauthUrl,
-                        String clientId, String clientSecret) {
+    public TokenService(RestTemplate restTemplate,
+                        @Value("${zevrant.services.oauth.clientId}") String clientId,
+                        @Value("${zevrant.services.oauth.clientSecret}") String clientSecret,
+                        @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}") String oauthUrl) {
         this.restTemplate = restTemplate;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
