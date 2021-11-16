@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -17,6 +19,8 @@ import java.util.Arrays;
 
 import static java.lang.String.format;
 
+@Configuration
+@Profile("liquibase")
 public class LiquibaseConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(LiquibaseConfig.class);
