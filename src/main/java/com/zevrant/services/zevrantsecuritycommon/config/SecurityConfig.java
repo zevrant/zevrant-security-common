@@ -4,7 +4,6 @@ package com.zevrant.services.zevrantsecuritycommon.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -13,6 +12,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @EnableWebFluxSecurity
@@ -36,6 +36,7 @@ public class SecurityConfig {
     @Bean
     @Primary
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity,
+                                                         ReactiveJwtAuthenticationConverter authenticationConverter,
                                                          @Value("${zevrant.unsecured.endpoints:/actuator/health,/actuator/info,/actuator/prometheus}") String[] unsecuredEndpoints) {
 
         return httpSecurity
@@ -46,7 +47,7 @@ public class SecurityConfig {
                 .pathMatchers(unsecuredEndpoints).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login()
-                .and().oauth2ResourceServer().jwt(Customizer.withDefaults())
+                .and().oauth2ResourceServer().jwt().jwtAuthenticationConverter(authenticationConverter).and()
                 .and().build();
     }
 }
