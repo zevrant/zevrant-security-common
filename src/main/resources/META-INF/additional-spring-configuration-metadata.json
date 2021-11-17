@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "zevrant.unsecured.endpoints",
+      "type": "java.lang.String",
+      "description": "Endpoints to be left unsecured."
+    },
+    {
+      "name": "zevrant.services.oauth.clientId",
+      "type": "java.lang.String",
+      "description": "Service account oauth clientId."
+    },
+    {
+      "name": "zevrant.services.oauth.clientSecret",
+      "type": "java.lang.String",
+      "description": "Service account oauth clientSecret."
+    },
+    {
+      "name": "zevrant.encrypted.properties",
+      "type": "java.lang.String",
+      "description": "Comma delimited list of properties to pull from secret store. A property named test/property/secret in the local profile would pull a secret from the store name /local/test/property/secret and be accessible as test.property.secret."
+    },
+    {
+      "name": "context.initializer.classes",
+      "type": "java.lang.String",
+      "description": "Spring boot context initializer."
+    }
+  ]
+}
