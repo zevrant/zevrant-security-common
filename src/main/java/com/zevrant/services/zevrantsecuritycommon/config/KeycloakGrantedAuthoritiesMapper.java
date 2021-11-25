@@ -32,6 +32,10 @@ public class KeycloakGrantedAuthoritiesMapper implements Converter<Jwt, Collecti
                 String clientId = (String) claims.get("clientId");
                 authorities.addAll(getRealmAccessRoles((Map<String, Object>) claims.get("realm_access")));
                 authorities.addAll(getResourceAccessRoles((Map<String, Object>) claims.get("resource_access"), clientId));
+            } else if (claims.containsKey("preferred_username")
+                    && claims.containsKey("azp")) {
+                String clientId = (String) claims.get("preferred_username");
+                authorities.addAll(getRealmAccessRoles((Map<String, Object>) claims.get("realm_access")));
             }
         }
         authorities.addAll(jwtGrantedAuthoritiesConverter.convert(source));
