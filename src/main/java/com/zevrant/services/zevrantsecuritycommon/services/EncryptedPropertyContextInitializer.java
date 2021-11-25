@@ -1,8 +1,5 @@
 package com.zevrant.services.zevrantsecuritycommon.services;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicSessionCredentials;
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.*;
@@ -19,11 +16,9 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
 
     private static final Logger logger = LoggerFactory.getLogger(EncryptedPropertyContextInitializer.class);
     private final List<String> supportedProfiles;
-    private final AwsSessionCredentialsProvider credentialsProvider;
 
     public EncryptedPropertyContextInitializer() {
         supportedProfiles = Arrays.asList("develop", "prod");
-        credentialsProvider = new AwsSessionCredentialsProvider();
     }
 
     @Override
@@ -34,14 +29,8 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
         String[] activeProfiles = applicationContext.getEnvironment().getActiveProfiles();
         // Create a Secrets Manager client
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new InstanceProfileCredentialsProvider(true));
+                .withRegion(region);
 
-//        if(Arrays.stream(activeProfiles).anyMatch(supportedProfiles::contains)) {
-            BasicSessionCredentials credentials = credentialsProvider.assumeRole(region, roleArn);
-            clientBuilder.withCredentials(new AWSStaticCredentialsProvider(credentials));
-
-//        }
         AWSSecretsManager client = clientBuilder.build();
 
         for(String profile : activeProfiles) {
