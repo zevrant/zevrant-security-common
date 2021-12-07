@@ -43,7 +43,9 @@ public class KeycloakGrantedAuthoritiesMapper implements Converter<Jwt, Collecti
     }
 
     private Collection<GrantedAuthority> getResourceAccessRoles(Map<String, Object> resourceAccess, String clientId) {
-        if (resourceAccess != null && resourceAccess.containsKey(clientId)) {
+        if (resourceAccess != null && resourceAccess.containsKey(clientId)
+                && ((JSONObject) resourceAccess.get(clientId)).containsKey(clientId)
+                && ((JSONObject) ((JSONObject) resourceAccess.get(clientId)).get(clientId)).containsKey("roles")) {
             JSONArray roles = (JSONArray) ((JSONObject) ((JSONObject) resourceAccess
                     .get(clientId))
                     .get(clientId))

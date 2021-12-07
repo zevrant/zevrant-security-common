@@ -25,7 +25,6 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
     public void initialize(ConfigurableApplicationContext applicationContext) {
         String[] properties = Objects.requireNonNull(applicationContext.getEnvironment().getProperty("zevrant.encrypted.properties")).split(",");
         String region = "us-east-1";
-        String roleArn = System.getenv("ROLE_ARN");
         String[] activeProfiles = applicationContext.getEnvironment().getActiveProfiles();
         // Create a Secrets Manager client
         AWSSecretsManagerClientBuilder clientBuilder = AWSSecretsManagerClientBuilder.standard()
