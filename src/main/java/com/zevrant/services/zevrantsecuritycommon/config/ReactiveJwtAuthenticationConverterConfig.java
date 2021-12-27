@@ -14,7 +14,6 @@ public class ReactiveJwtAuthenticationConverterConfig {
         KeycloakGrantedAuthoritiesMapper mapper = new KeycloakGrantedAuthoritiesMapper();
         mapper.setAuthorityPrefix("");
         mapper.setAuthoritiesClaimName("realm_access");
-//        jwtGrantedAuthoritiesConverter.convert()
 
         ReactiveJwtAuthenticationConverter jwtAuthenticationConverter = new ReactiveJwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(

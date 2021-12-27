@@ -1,6 +1,6 @@
 package com.zevrant.services.zevrantsecuritycommon.services;
 
-import com.zevrant.services.zevrantsecuritycommon.rest.response.AccessToken;
+import com.zevrant.services.zevrantuniversalcommon.rest.oauth.response.OAuthToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -28,7 +28,7 @@ public class TokenService {
         this.oauthUrl = oauthUrl;
     }
 
-    public AccessToken getToken() {
+    public OAuthToken getToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -37,8 +37,8 @@ public class TokenService {
         body.set("grant_type", "client_credentials");
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<AccessToken> response = restTemplate.exchange(this.oauthUrl + "/protocol/openid-connect/token",
-                HttpMethod.POST, entity, AccessToken.class);
+        ResponseEntity<OAuthToken> response = restTemplate.exchange(this.oauthUrl + "/protocol/openid-connect/token",
+                HttpMethod.POST, entity, OAuthToken.class);
         assert (response.getBody() != null);
         return response.getBody();
     }
