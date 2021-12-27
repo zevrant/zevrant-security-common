@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,6 +33,18 @@ public class ControllerAdvice {
         logger.error("ERROR: Internal server error {}", ex.getMessage());
         logger.error(ExceptionUtils.getStackTrace(ex));
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setExceptionClass(ex.getClass().toString());
+        apiError.setErrorMessage(ex.getMessage());
+        apiError.setResponseStatus(403);
+        apiError.setStackTrace(ExceptionUtils.getStackTrace(ex));
+        logger.error("ERROR: Internal server error {}", ex.getMessage());
+        logger.error(ExceptionUtils.getStackTrace(ex));
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(RuntimeException.class)
