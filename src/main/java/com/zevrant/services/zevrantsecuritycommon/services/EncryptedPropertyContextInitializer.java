@@ -57,7 +57,7 @@ public class EncryptedPropertyContextInitializer implements ApplicationContextIn
                     .build();
             Vault vault = new Vault(vaultConfig);
             String username = System.getenv("ACCESS_KEY_ID");
-            String password = System.getenv("ACCESS_SECRET_KEY");
+            String password = System.getenv("SECRET_ACCESS_KEY");
             AuthResponse authResponse = vault.auth().loginByUserPass(username, password, profile);
             String clientToken = authResponse.getAuthClientToken();
             vaultConfig = new VaultConfig()
