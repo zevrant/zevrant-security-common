@@ -55,7 +55,7 @@ public class ControllerAdvice {
         int responseStatus = 500;
         if (annotationList.size() == 1) {
             ResponseStatus responseStatus1 = ex.getClass().getAnnotation(ResponseStatus.class);
-            responseStatus = responseStatus1.code().value();
+            responseStatus = responseStatus1.value().value();
         } else {
             logger.info("Processed exception did not contain a @ResponseStatus annotation");
             logger.error("ERROR: Internal server error {}", ex.getMessage());
